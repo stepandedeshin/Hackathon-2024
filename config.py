@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     USER: str
     PASS: str
     DATABASE_NAME: str
+    DATABASE_LINK: str
     
     class Config:
         env_file = ".env"
