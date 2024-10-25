@@ -1,5 +1,5 @@
 from aiogram import Router
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 import psycopg2
 from sqlalchemy import Column, String, create_engine, Date
 from sqlalchemy.ext.declarative import declarative_base
@@ -43,12 +43,12 @@ class Users(base_of_users):
 base_of_users.metadata.create_all(engine_of_users)
 
 
-async def start_info(callback: CallbackQuery) -> None:
-    user_id = str(callback.from_user.id)
-    username = str(callback.from_user.username)
-    name = str(callback.from_user.first_name)
-    last_name = str(callback.from_user.last_name)
-    date = str(callback.message.date)
+async def start_info(message: Message) -> None:
+    user_id = str(message.from_user.id)
+    username = str(message.from_user.username)
+    name = str(message.from_user.first_name)
+    last_name = str(message.from_user.last_name)
+    date = str(message.date)
     user = session_of_users.query(Users).filter_by(user_id = user_id).first()
     if not user:
         new_user = Users(user_id = user_id, username = username, name = name, last_name = last_name, date = date)
