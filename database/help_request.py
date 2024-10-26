@@ -37,3 +37,32 @@ class HelpRequests(base_of_users):
     date_of_conversation = Column(Date, nullable = False)
     
 base_of_users.metadata.create_all(engine_of_users)
+
+
+async def add_thread(data: dict) -> None:
+    user_id = data["user_id"]
+    thread_id = data["thread_id"]
+    date = data["date"]
+    user = session_of_help_requests.query(HelpRequests).filter_by(thread_id = thread_id).first()
+    if not user:
+        new_user = HelpRequests(thread_id = thread_id, user_id = user_id, date_of_conversation = date)
+        session_of_help_requests.add(new_user)
+        session_of_help_requests.commit()
+    else:
+        user.thread_id = thread_id
+        user.date_of_conversation = date
+        session_of_help_requests.commit()
+    return
+
+
+async def return_user_by_thread_id(thread_id: int) -> list:
+    user = session_of_help_requests.query(HelpRequests).filter_by(thread_id = thread_id).first()
+    if user:
+        return [user.user_id, user.thread_id, user.date_of_conversation]
+    return
+
+async def return_user_by_user_id(user_id: str) -> list:
+    user = session_of_help_requests.query(HelpRequests).filter_by(user_id = user_id).first()
+    if user:
+        return [user.user_id, user.thread_id, user.date_of_conversation]
+    return

@@ -55,3 +55,28 @@ async def start_info(message: Message) -> None:
         session_of_users.add(new_user)
         session_of_users.commit()
     return
+
+
+async def add_phone_number(message: Message) -> None:
+    user_id = str(message.from_user.id)
+    phone_number = str(message.contact.phone_number)
+    user = session_of_users.query(Users).filter_by(user_id = user_id).first()
+    if user:
+        user.phone_number = phone_number
+        session_of_users.commit()
+    return
+
+
+async def return_phone_number_or_none(user_id: str) -> str | None:
+    user = session_of_users.query(Users).filter_by(user_id = user_id).first()
+    if user:
+        return user.phone_number
+    return
+
+
+async def delete_phone_number(user_id: str) -> None:
+    user = session_of_users.query(Users).filter_by(user_id = user_id).first()
+    if user:
+        user.phone_number = None
+        session_of_users.commit()
+    return
