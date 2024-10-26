@@ -1,22 +1,24 @@
-import asyncio
-
-from aiogram.exceptions import TelegramBadRequest
-from aiogram import Router, F
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
-from aiogram.filters import Filter
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
-from database.users import return_phone_number_or_none, delete_phone_number
+from aiogram.types import CallbackQuery
 
 import app.main_menu.keyboard as kb
-
+from database.users import return_phone_number_or_none
 
 MainMenuCallbackRouter = Router()
 
 
 @MainMenuCallbackRouter.callback_query(F.data.startswith('main_menu'))
 async def start_message(callback: CallbackQuery, state: FSMContext) -> None: 
+    '''
+    Get user back to main menu by callback_data (pressing the inline button)
+
+    callback_data may contain parameter "without_deleting" which makes bot to don't remove a message before
+
+    returns None
+    '''
     await callback.answer('Меню')
-    await callback.message.answer(f'Приветствуем, @{callback.from_user.username}!\nДобро пожаловать в бота поддержки пользователей!', reply_markup = kb.start_message)
+    await callback.message.answer_photo(photo = 'https://imgur.com/Uqf17Mh', caption = f'Приветствуем, @{callback.from_user.username}!\nДобро пожаловать в бота поддержки пользователей!', reply_markup = kb.start_message)
     if not 'without_deleting' in callback.data:
         await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
     if 'without_deleting' in callback.data:
@@ -26,6 +28,11 @@ async def start_message(callback: CallbackQuery, state: FSMContext) -> None:
 
 @MainMenuCallbackRouter.callback_query(F.data == 'gpt_assistant')
 async def gpt_assistant_start(callback: CallbackQuery) -> None:
+    '''
+    Get user to GPT Assistant block by callback_data (pressing the inline button)
+
+    returns None
+    '''
     await callback.answer('GPT Ассистент')
     await callback.message.answer('GPT Ассистент поможет вам найти ответ на ваш вопрос, опираясь на документацию', reply_markup = kb.gpt_assistant)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
@@ -34,6 +41,12 @@ async def gpt_assistant_start(callback: CallbackQuery) -> None:
 
 @MainMenuCallbackRouter.callback_query(F.data == 'faq')
 async def show_faq(callback: CallbackQuery) -> None:
+    '''
+    Get user to FAQ block by callback_data (pressing the inline button)
+    FAQ file splits to a few messages and sends part by part which lenght are less than 4096 tokens because of telegram message lenght limit (4096 tokens)
+
+    returns None
+    '''
     await callback.answer('')
     faq_questions = open('faq.txt', 'r', encoding='utf-8').read()
     message_limit = 4096 
@@ -46,6 +59,12 @@ async def show_faq(callback: CallbackQuery) -> None:
 
 @MainMenuCallbackRouter.callback_query(F.data == 'help_by_admin')
 async def conversation_start(callback: CallbackQuery) -> None:
+    '''
+    Get user to starts admin conversation state by callback_data (pressing the inline button)
+    Only authorized by phone users can use an online support
+
+    returns None
+    '''
     await callback.answer('Онлайн поддержка')
     phone_number = await return_phone_number_or_none(user_id = str(callback.from_user.id))
     if phone_number:
@@ -58,6 +77,12 @@ async def conversation_start(callback: CallbackQuery) -> None:
 
 @MainMenuCallbackRouter.callback_query(F.data == 'auth')
 async def auth_start(callback: CallbackQuery) -> None:
+    '''
+    Lets user to auth himself by using phone number. Lets user share telegram contact by pressing the button (reply keyboard)
+    If phone number already exists in database lets user to edit or delete it
+
+    returns None
+    '''
     await callback.answer('Авторизация')
     phone_number = await return_phone_number_or_none(user_id = str(callback.from_user.id))
     if not phone_number:

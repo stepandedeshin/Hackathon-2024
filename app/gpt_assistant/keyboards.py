@@ -1,8 +1,4 @@
-from aiogram.types import (InlineKeyboardMarkup, InlineKeyboardButton,
-                            ReplyKeyboardMarkup, KeyboardButton)
-from aiogram.filters.callback_data import CallbackData
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 ask_again_or_menu = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = '🙋‍♂️ Спросить еще раз', callback_data = 'ask_gpt_assistant_without_deleting')],

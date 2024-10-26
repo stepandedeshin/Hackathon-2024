@@ -1,7 +1,12 @@
 import requests
 
 
-async def get_data_request(filename: str):
+async def get_data_request(filename: str) -> str:
+    '''
+    Forming a string of possible questions from given text file
+    
+    returns strng of possible requests or returns error message
+    '''
     data_string = open(filename, 'r', encoding = 'utf-8').read()
     url = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion'
     headers = {
@@ -31,4 +36,4 @@ async def get_data_request(filename: str):
     try:
         return response.json()['result']['alternatives'][0]['message']['text']
     except:
-        return 'К сожалению YandexGPT не смогла ответить на ваш вопрос, попробуйте снова!'
+        return 'error'

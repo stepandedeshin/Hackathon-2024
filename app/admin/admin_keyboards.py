@@ -1,8 +1,4 @@
-from aiogram.types import (InlineKeyboardMarkup, InlineKeyboardButton,
-                            ReplyKeyboardMarkup, KeyboardButton)
-from aiogram.filters.callback_data import CallbackData
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 send_data_again = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = 'Попробовать еще раз', callback_data='send_data_again')],

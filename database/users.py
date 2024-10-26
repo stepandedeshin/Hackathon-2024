@@ -1,13 +1,11 @@
-from aiogram import Router
-from aiogram.types import CallbackQuery, Message
 import psycopg2
-from sqlalchemy import Column, String, create_engine, Date
+from aiogram import Router
+from aiogram.types import Message
+from sqlalchemy import Column, Date, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-
+from sqlalchemy.orm import Session, sessionmaker
 
 from config import settings
-
 
 DatabaseUsersRouter = Router()
 
@@ -44,6 +42,10 @@ base_of_users.metadata.create_all(engine_of_users)
 
 
 async def start_info(message: Message) -> None:
+    '''
+    Adds an information about user after using "/start"
+    new user object contains user_id, username, name, last_name, date of first activation
+    '''
     user_id = str(message.from_user.id)
     username = str(message.from_user.username)
     name = str(message.from_user.first_name)
@@ -58,6 +60,12 @@ async def start_info(message: Message) -> None:
 
 
 async def add_phone_number(message: Message) -> None:
+    '''
+    Adds an information about phone number if user exists in table "users"
+    requires user_id to find user data in table "users" and adds shared phone number or changes it to current if None
+    
+    returns None
+    '''
     user_id = str(message.from_user.id)
     phone_number = str(message.contact.phone_number)
     user = session_of_users.query(Users).filter_by(user_id = user_id).first()
@@ -68,6 +76,11 @@ async def add_phone_number(message: Message) -> None:
 
 
 async def return_phone_number_or_none(user_id: str) -> str | None:
+    '''
+    Returns phone number
+    requires user_id to find user data in table "users" and returns phone number if exists
+    in case of phone number = None or user not exists returns None
+    '''
     user = session_of_users.query(Users).filter_by(user_id = user_id).first()
     if user:
         return user.phone_number
@@ -75,6 +88,12 @@ async def return_phone_number_or_none(user_id: str) -> str | None:
 
 
 async def delete_phone_number(user_id: str) -> None:
+    '''
+    Delete user.phone_number from table "users"
+    requires user_id to find user data in table "users" and deletes phone number if exists
+    
+    returns None
+    '''
     user = session_of_users.query(Users).filter_by(user_id = user_id).first()
     if user:
         user.phone_number = None

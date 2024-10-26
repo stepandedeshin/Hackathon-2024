@@ -1,9 +1,5 @@
-from aiogram.types import (InlineKeyboardMarkup, InlineKeyboardButton,
-                            ReplyKeyboardMarkup, KeyboardButton)
-from aiogram.filters.callback_data import CallbackData
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-
-
+from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
+                           KeyboardButton, ReplyKeyboardMarkup)
 
 auth = ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text = '📲 Поделиться номером телефона', request_contact = True)],

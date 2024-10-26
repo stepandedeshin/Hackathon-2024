@@ -1,12 +1,11 @@
+import psycopg2
 from aiogram import Router
 from aiogram.types import Message
-import psycopg2
-from sqlalchemy import Column, String, Integer, create_engine, Date
+from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from config import settings
-
 
 DatabaseGPTRequestsRouter = Router()
 
@@ -40,6 +39,12 @@ base_of_users.metadata.create_all(engine_of_users)
 
 
 async def add_request(message: Message) -> None:
+    '''
+    Adds user GPT request to table "gpt_requests"
+    requires user_id and request_text
+
+    returns None
+    '''
     user_id = str(message.from_user.id)
     request_text = message.text
     new_request = GPTRequests(user_id = user_id, request_text = request_text)

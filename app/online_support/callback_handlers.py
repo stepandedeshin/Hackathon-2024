@@ -1,31 +1,44 @@
-import asyncio
-
-from aiogram.exceptions import TelegramBadRequest
-from aiogram import Router, F
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile, Message, Voice
-from aiogram.filters import Filter
-from database.users import return_phone_number_or_none, delete_phone_number
-from database.help_request import add_thread, return_user_by_thread_id, return_user_by_user_id
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 
-from app.online_support.states import UserHelp
 import app.online_support.keyboards as kb
-
+from app.online_support.states import UserHelp
+from database.help_request import (add_thread, return_user_by_thread_id,
+                                   return_user_by_user_id)
+from database.users import return_phone_number_or_none
 
 OnlineSupportCallbackRouter = Router()
 
 
 @OnlineSupportCallbackRouter.callback_query(F.data == 'start_conversation')
 async def start_conv(callback: CallbackQuery, state: FSMContext) -> None:
+    '''
+    Starts conversation state by callback_data (by pressing the inline button)
+    Only authorized by phone users can use an online support
+
+    returns None
+    '''
+    phone_number = await return_phone_number_or_none(user_id=str(callback.from_user.id))
     await callback.answer('')
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
-    await state.set_state(UserHelp.user_message)
-    await callback.message.answer('Отправьте ваш вопрос и администратор в скором времени на него ответит!')
+    if phone_number:
+        await state.set_state(UserHelp.user_message)
+        await callback.message.answer('Отправьте ваш вопрос и администратор в скором времени на него ответит!')
+    else:
+        await callback.message.answer('Вы не авторизованы! Чтобы обратиться в онлайн поддержку необходимо привязать свой номер телефона!', reply_markup = kb.auth_to_use_online_support)
     return
 
 
 @OnlineSupportCallbackRouter.message(UserHelp.user_message)
 async def send_help(message: Message, state: FSMContext) -> None:
+    '''
+    Sending user's help request to new topic if topic not exists and adding thread to database
+
+    in case of topic exists just sending a message without creating topic and adding thread_id
+
+    returns None
+    '''
     await state.update_data(user_id = str(message.from_user.id))
     await state.update_data(first_message = str(message.from_user.id))
     await state.update_data(date = message.date)
@@ -46,6 +59,13 @@ async def send_help(message: Message, state: FSMContext) -> None:
 
 @OnlineSupportCallbackRouter.message(F.photo)
 async def send_photo(message: Message) -> None:
+    '''
+    Sending user's photo to existing topic
+
+    in case of topic not exists asking to create one by using "/start_conversation"
+
+    returns None
+    '''
     group = [photo.file_id for photo in message.photo]
     if message.chat.is_forum:
         if message.chat.id == '-1002183209044' and message.message_thread_id == 1:
@@ -66,6 +86,13 @@ async def send_photo(message: Message) -> None:
 
 @OnlineSupportCallbackRouter.message(F.video)
 async def send_video(message: Message) -> None:
+    '''
+    Sending user's video to existing topic
+
+    in case of topic not exists asking to create one by using "/start_conversation"
+
+    returns None
+    '''
     video = message.video.file_id
     if message.chat.is_forum:
         if message.chat.id == '-1002183209044' and message.message_thread_id == 1:
@@ -86,6 +113,18 @@ async def send_video(message: Message) -> None:
 
 @OnlineSupportCallbackRouter.message()
 async def help_message(message: Message):
+    '''
+    Handle EVERY message that is not handled by other routers
+    If message sent in admin chat in topic passes
+    If message sent not in admin chat but in topic sens a message to user (admin answer)
+
+    If message sent not in topics
+    Sending user's message to existing topic
+
+    in case of user topic not exists asking to create one by using "/start_conversation"
+
+    returns None
+    '''
     if message.chat.is_forum:
         if message.chat.id == '-1002437414181' and message.message_thread_id == 1:
             return

@@ -1,24 +1,24 @@
-import asyncio
-
-from aiogram.exceptions import TelegramBadRequest
-from aiogram import Router, F
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile, Message, Voice
-from aiogram.filters import Filter
-from database.users import return_phone_number_or_none, delete_phone_number
-from database.help_request import add_thread, return_user_by_thread_id, return_user_by_user_id
-from database.gpt_requests import add_request
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 
 import app.gpt_assistant.keyboards as kb
-from app.gpt_assistant.user_requests import get_user_request
 from app.gpt_assistant.states import UserRequest
-
+from app.gpt_assistant.user_requests import get_user_request
+from database.gpt_requests import add_request
 
 GPTAssistantCallbackRouter = Router()
 
 
 @GPTAssistantCallbackRouter.callback_query(F.data.startswith('ask_gpt_assistant'))
 async def create_request(callback: CallbackQuery, state: FSMContext) -> None:
+    '''
+    Starts a request state for user to send a request to GPT Assistant
+
+    ask_gpt_assistant may contain an "without_deleting" parameter that makes bot to not delete the last message
+
+    returns None
+    '''
     await callback.answer('Задайте вопрос!')
     await callback.message.answer('Задайте вопрос нашему GPT Ассистенту')
     if not 'without_deleting' in callback.data:
@@ -28,6 +28,11 @@ async def create_request(callback: CallbackQuery, state: FSMContext) -> None:
 
 @GPTAssistantCallbackRouter.message(UserRequest.request_text)
 async def push_request(message: Message, state: FSMContext) -> None:
+    '''
+    Handles and sends GPT Assistant's answer to user's request or error message
+
+    returns None
+    '''
     await state.update_data(request_text = message.text)
     data = await state.get_data()
     request_text = data["request_text"]
