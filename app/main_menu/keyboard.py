@@ -13,12 +13,13 @@ start_message = InlineKeyboardMarkup(inline_keyboard = [
 
 
 gpt_assistant = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text = '🙋‍♂️ Задать вопрос', callback_data = 'ask_gpt_assistant')],
     [InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = 'main_menu')],
 ])
 
 
 show_faq = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = 'main_menu')],
+    [InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = f'main_menu_without_deleting')],
 ])
 
 
@@ -39,3 +40,10 @@ auth_edit_or_delete = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = '🔗 Отвязать номер телефона', callback_data = 'delete_phone_number_request')],
     [InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = 'main_menu')],
 ])
+
+auth_to_use_gpt = InlineKeyboardMarkup(inline_keyboard = [
+    [InlineKeyboardButton(text = '📱 Привязать номер телефона', callback_data = 'auth')],
+    [InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = 'main_menu')],
+])
+
+

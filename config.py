@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     PASS: str
     DATABASE_NAME: str
     DATABASE_LINK: str
-    
+    ADMINS: list
+
     class Config:
         env_file = ".env"
     

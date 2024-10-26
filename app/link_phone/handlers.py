@@ -14,6 +14,7 @@ async def auth_by_phone(message: Message) -> None:
     await add_phone_number(message = message)
     try:
         await message.bot.delete_message(chat_id = message.chat.id, message_id = message.message_id - 1)
+        await message.bot.delete_message(chat_id = message.chat.id, message_id = message.message_id - 2)
     except: pass
     await message.answer(f'Спасибо за привязку номера телефона!\nВаш телефон: +{message.contact.phone_number}', reply_markup = kb.auth_edit_or_delete)
     await message.bot.delete_message(chat_id = message.chat.id, message_id = message.message_id)
