@@ -18,6 +18,7 @@ async def edit_phone_number(callback: CallbackQuery) -> None:
     await callback.answer('Редактируйте свой номер телефона')
     await callback.message.answer(f'Привязанный вами номер телефона: {phone_number}\nПоделитесь новым номером телефона!', reply_markup = kb.auth)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
+    return
 
 
 @AuthCallbackRouter.callback_query(F.data == 'delete_phone_number_request')
@@ -26,11 +27,13 @@ async def auth_delete_request(callback: CallbackQuery) -> None:
     await callback.answer('Редактируйте свой номер телефона')
     await callback.message.answer(f'Привязанный вами номер телефона: {phone_number}\nВы можете удалить его нажав на кнопку ниже, но больше не сможте обратиться в онлайн поддержку.\n\nВы в любой момент сможете привязать свой номер заново!', reply_markup = kb.auth_delete)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
+    return
 
 
 @AuthCallbackRouter.callback_query(F.data == 'delete_phone')
-async def auth_delete(callback: CallbackQuery):
+async def auth_delete(callback: CallbackQuery) -> None:
     await delete_phone_number(user_id = str(callback.from_user.id))
     await callback.answer('Удаление номера телефона')
     await callback.message.answer('Ваш номер телефона отвязан! Вы в любой момент можете привязать его заново', reply_markup = kb.auth_delete_confirmed)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
+    return

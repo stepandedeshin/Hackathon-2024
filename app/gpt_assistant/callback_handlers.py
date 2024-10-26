@@ -18,15 +18,16 @@ GPTAssistantCallbackRouter = Router()
 
 
 @GPTAssistantCallbackRouter.callback_query(F.data.startswith('ask_gpt_assistant'))
-async def create_request(callback: CallbackQuery, state: FSMContext):
+async def create_request(callback: CallbackQuery, state: FSMContext) -> None:
     await callback.answer('Задайте вопрос!')
     await callback.message.answer('Задайте вопрос нашему GPT Ассистенту')
     if not 'without_deleting' in callback.data:
         await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
     await state.set_state(UserRequest.request_text)
+    return
 
 @GPTAssistantCallbackRouter.message(UserRequest.request_text)
-async def push_request(message: Message, state: FSMContext):
+async def push_request(message: Message, state: FSMContext) -> None:
     await state.update_data(request_text = message.text)
     data = await state.get_data()
     request_text = data["request_text"]
@@ -38,3 +39,4 @@ async def push_request(message: Message, state: FSMContext):
     await message.answer(f'Вот ответ на ваш вопрос!\n\n{response}', reply_markup = kb.ask_again_or_menu)
     await add_request(message = message)
     await message.bot.delete_message(chat_id = message.chat.id, message_id = msg_1.message_id)
+    return

@@ -15,3 +15,4 @@ OnlineSupportHandlersRouter = Router()
 async def conversation_start(message: Message) -> None:
     await message.answer('Добро пожаловать в онлайн поддержку! Здесь вы можете запросить помощь у онлайн-администраторов', reply_markup = kb.help_by_admin)
     await message.bot.delete_message(chat_id = message.chat.id, message_id = message.message_id)
+    return

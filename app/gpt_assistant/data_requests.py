@@ -2,7 +2,7 @@ import requests
 
 
 async def get_data_request(filename: str):
-    data_string = open(filename, 'r', encoding='utf-8').read()
+    data_string = open(filename, 'r', encoding = 'utf-8').read()
     url = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion'
     headers = {
         'Authorization': 'Bearer t1.9euelZrNk4-bzJWUyJvLm8_MicaOnO3rnpWaz8iUi5GKzs2SkpCYyZ7NjJbl8_c8WgpH-e9TAGRZ_N3z93wICEf571MAZFn8zef1656VmpqNmZqTz8yWncyVy8qKx4yP7_zF656VmpqNmZqTz8yWncyVy8qKx4yP.h_scoUHRbGOxzzNt2tzxu3u9a6L5F0hqcrSTtE6IpC9tKCCvG8PICQCP0-hnEoJfuI3CwsBZWCRiol1wTFVjAg',
@@ -26,7 +26,7 @@ async def get_data_request(filename: str):
             }
         ]
     }
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers = headers, json = data)
 
     try:
         return response.json()['result']['alternatives'][0]['message']['text']
