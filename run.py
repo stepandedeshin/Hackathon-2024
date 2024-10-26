@@ -11,6 +11,7 @@ from app.link_phone.callback_handlers import AuthCallbackRouter
 from app.online_support.callback_handlers import OnlineSupportCallbackRouter
 from app.online_support.handlers import OnlineSupportHandlersRouter
 from app.gpt_assistant.callback_handlers import GPTAssistantCallbackRouter
+from app.admin.admin_callback import AdminPanelRouter
 from database.help_request import DatabaseHelpRequestsRouter
 from database.gpt_requests import DatabaseGPTRequestsRouter
 from database.users import DatabaseUsersRouter
@@ -18,7 +19,7 @@ from database.users import DatabaseUsersRouter
 async def main() -> None:
     bot = Bot(settings.TOKEN)
     dp = Dispatcher()
-    dp.include_routers(AuthHandlersRouter, AuthCallbackRouter, MainMenuHandlersRouter, MainMenuCallbackRouter, OnlineSupportHandlersRouter, GPTAssistantCallbackRouter, DatabaseGPTRequestsRouter, DatabaseUsersRouter, DatabaseHelpRequestsRouter, OnlineSupportCallbackRouter)
+    dp.include_routers(AuthHandlersRouter, AuthCallbackRouter, MainMenuHandlersRouter, MainMenuCallbackRouter, OnlineSupportHandlersRouter, GPTAssistantCallbackRouter, DatabaseGPTRequestsRouter, DatabaseUsersRouter, DatabaseHelpRequestsRouter, AdminPanelRouter, OnlineSupportCallbackRouter)
     await dp.start_polling(bot)
 
 

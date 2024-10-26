@@ -41,7 +41,7 @@ auth_edit_or_delete = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = 'main_menu')],
 ])
 
-auth_to_use_gpt = InlineKeyboardMarkup(inline_keyboard = [
+auth_to_use_online_support = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = '📱 Привязать номер телефона', callback_data = 'auth')],
     [InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = 'main_menu')],
 ])

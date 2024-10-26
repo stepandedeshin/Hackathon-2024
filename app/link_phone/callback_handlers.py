@@ -16,7 +16,7 @@ AuthCallbackRouter = Router()
 async def edit_phone_number(callback: CallbackQuery) -> None:
     phone_number = await return_phone_number_or_none(user_id = str(callback.from_user.id))
     await callback.answer('Редактируйте свой номер телефона')
-    await callback.message.answer(f'Привязанный вами номер телефона: +{phone_number}\nПоделитесь новым номером телефона!', reply_markup = kb.auth)
+    await callback.message.answer(f'Привязанный вами номер телефона: {phone_number}\nПоделитесь новым номером телефона!', reply_markup = kb.auth)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
 
 
@@ -24,7 +24,7 @@ async def edit_phone_number(callback: CallbackQuery) -> None:
 async def auth_delete_request(callback: CallbackQuery) -> None:
     phone_number = await return_phone_number_or_none(user_id = str(callback.from_user.id))
     await callback.answer('Редактируйте свой номер телефона')
-    await callback.message.answer(f'Привязанный вами номер телефона: +{phone_number}\nВы можете удалить его нажав на кнопку ниже, но больше не сможте использовать GPT Ассистента.\n\nВы в любой момент сможете привязать свой номер заново!', reply_markup = kb.auth_delete)
+    await callback.message.answer(f'Привязанный вами номер телефона: {phone_number}\nВы можете удалить его нажав на кнопку ниже, но больше не сможте обратиться в онлайн поддержку.\n\nВы в любой момент сможете привязать свой номер заново!', reply_markup = kb.auth_delete)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
 
 

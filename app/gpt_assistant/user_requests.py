@@ -1,11 +1,11 @@
 import requests
-from app.gpt_assistant.data_requests import get_data_request
+
 
 async def get_user_request(request_text: str) -> str:
     file = open('data.txt', 'r', encoding='utf-8').read()
     url = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion'
     headers = {
-        'Authorization': 'Bearer t1.9euelZqYjIyYnsaMy42PisjPmpnNyO3rnpWaz8iUi5GKzs2SkpCYyZ7NjJbl8_dMTA1H-e90VDBr_t3z9wx7Ckf573RUMGv-zef1656VmpDIk42KksqMk5adiZyZlomW7_zF656VmpDIk42KksqMk5adiZyZlomW.IJ_QGCIuY63zQIUebyPfTETEypm8kvaVuCaAaaPY6cQ7f3Z9PVesVDikA71bfMR3re4vQkiXEeFvUEVcKQjHCA',
+        'Authorization': 'Bearer t1.9euelZrNk4-bzJWUyJvLm8_MicaOnO3rnpWaz8iUi5GKzs2SkpCYyZ7NjJbl8_c8WgpH-e9TAGRZ_N3z93wICEf571MAZFn8zef1656VmpqNmZqTz8yWncyVy8qKx4yP7_zF656VmpqNmZqTz8yWncyVy8qKx4yP.h_scoUHRbGOxzzNt2tzxu3u9a6L5F0hqcrSTtE6IpC9tKCCvG8PICQCP0-hnEoJfuI3CwsBZWCRiol1wTFVjAg',
         'Content-Type': 'application/json'
     }
     data = {
@@ -13,7 +13,7 @@ async def get_user_request(request_text: str) -> str:
         "completionOptions": {
             "stream": False,
             "temperature": 0.3,
-            "maxTokens": 1000
+            "maxTokens": 1000 
         },
         "messages": [
             {

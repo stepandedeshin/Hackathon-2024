@@ -14,23 +14,19 @@ MainMenuCallbackRouter = Router()
 
 
 @MainMenuCallbackRouter.callback_query(F.data.startswith('main_menu'))
-async def start_message(callback: CallbackQuery, state: FSMContext) -> None:
+async def start_message(callback: CallbackQuery, state: FSMContext) -> None: 
     await callback.answer('Меню')
     await callback.message.answer(f'Приветствуем, @{callback.from_user.username}!\nДобро пожаловать в бота поддержки пользователей!', reply_markup = kb.start_message)
     if not 'without_deleting' in callback.data:
         await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
     if 'without_deleting' in callback.data:
         await state.clear()
-        
+
 
 @MainMenuCallbackRouter.callback_query(F.data == 'gpt_assistant')
 async def gpt_assistant_start(callback: CallbackQuery) -> None:
     await callback.answer('GPT Ассистент')
-    phone_number = await return_phone_number_or_none(user_id=str(callback.from_user.id))
-    if phone_number:
-        await callback.message.answer('GPT Ассистент поможет вам найти ответ на ваш вопрос, опираясь на документацию', reply_markup = kb.gpt_assistant)
-    else:
-        await callback.message.answer('Вы не авторизованы! Чтобы использовать GPT Ассистента необходимо привязать свой номер телефона!', reply_markup = kb.auth_to_use_gpt)
+    await callback.message.answer('GPT Ассистент поможет вам найти ответ на ваш вопрос, опираясь на документацию', reply_markup = kb.gpt_assistant)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
 
 
@@ -48,7 +44,11 @@ async def show_faq(callback: CallbackQuery) -> None:
 @MainMenuCallbackRouter.callback_query(F.data == 'help_by_admin')
 async def conversation_start(callback: CallbackQuery) -> None:
     await callback.answer('Онлайн поддержка')
-    await callback.message.answer('Добро пожаловать в онлайн поддержку! Здесь вы можете запросить помощь у онлайн-администраторов', reply_markup = kb.help_by_admin)
+    phone_number = await return_phone_number_or_none(user_id=str(callback.from_user.id))
+    if phone_number:
+        await callback.message.answer('Добро пожаловать в онлайн поддержку! Здесь вы можете запросить помощь у онлайн-администраторов', reply_markup = kb.help_by_admin)
+    else:
+        await callback.message.answer('Вы не авторизованы! Чтобы обратиться в онлайн поддержку необходимо привязать свой номер телефона!', reply_markup = kb.auth_to_use_online_support)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
 
 
@@ -57,7 +57,7 @@ async def auth_start(callback: CallbackQuery) -> None:
     await callback.answer('Авторизация')
     phone_number = await return_phone_number_or_none(user_id = str(callback.from_user.id))
     if not phone_number:
-        await callback.message.answer('Привяжите номер телефона, чтобы пользоваться GPT Ассистентом!', reply_markup = kb.auth)
+        await callback.message.answer('Привяжите номер телефона, чтобы пользоваться онлайн поддержкой!', reply_markup = kb.auth)
     else:
-        await callback.message.answer(f'Привязанный вами номер телефона: +{phone_number}\nЗдесь вы можете его изменить или удалить', reply_markup = kb.auth_edit_or_delete)
+        await callback.message.answer(f'Привязанный вами номер телефона: {phone_number}\nЗдесь вы можете его изменить или удалить', reply_markup = kb.auth_edit_or_delete)
     await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
