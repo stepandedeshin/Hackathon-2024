@@ -19,7 +19,9 @@ async def start_message(message: Message) -> None:
     '''
     await start_info(message = message)
     await message.answer_photo(photo = 'https://imgur.com/Uqf17Mh', caption = f'Приветствуем, @{message.from_user.username}!\nДобро пожаловать в бота поддержки пользователей!', reply_markup = kb.start_message)
-    await message.bot.delete_message(chat_id = message.chat.id, message_id = message.message_id)
+    try:
+        await message.bot.delete_message(chat_id = message.chat.id, message_id = message.message_id)
+    except: pass
     return
 
 

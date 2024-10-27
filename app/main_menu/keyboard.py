@@ -1,8 +1,7 @@
+from aiogram.filters.callback_data import CallbackData
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, ReplyKeyboardMarkup)
-from aiogram.filters.callback_data import CallbackData
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-
 
 start_message = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = '🤖 GPT Ассистент', callback_data = 'gpt_assistant')],
