@@ -48,7 +48,7 @@ async def show_faq(callback: CallbackQuery) -> None:
     returns None
     '''
     await callback.answer('')
-    faq_questions = open('faq.txt', 'r', encoding='utf-8').read()
+    faq_questions = open('faq.txt', 'r', encoding = 'utf-8').read()
     message_limit = 2048
     parts = []
     current_part = ""
@@ -73,7 +73,7 @@ async def pagination_handler(callback: CallbackQuery, callback_data: kb.Paginati
     '''
     await callback.answer('')
     page_num = int(callback_data.page)
-    faq_questions = open('faq.txt', 'r', encoding='utf-8').read()
+    faq_questions = open('faq.txt', 'r', encoding = 'utf-8').read()
     message_limit = 2048
     parts = []
     current_part = ""
@@ -87,11 +87,11 @@ async def pagination_handler(callback: CallbackQuery, callback_data: kb.Paginati
         parts.append(current_part)
     if callback_data.action == 'prev':
         page = page_num - 1 if page_num > 0 else 0
-        await callback.message.answer(text = parts[page], reply_markup=kb.paginatorfaq(length_of_faq = len(parts), page = page))
+        await callback.message.answer(text = parts[page], reply_markup = kb.paginatorfaq(length_of_faq = len(parts), page = page))
         await callback.message.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     if callback_data.action == 'next':
         page = page_num + 1 if page_num < len(parts) - 1 else page_num
-        await callback.message.answer(text = parts[page], reply_markup=kb.paginatorfaq(length_of_faq = len(parts), page = page))
+        await callback.message.answer(text = parts[page], reply_markup = kb.paginatorfaq(length_of_faq = len(parts), page = page))
         await callback.message.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     if callback_data.action == 'page_number':
         await callback.answer('Это просто номер страницы!')
