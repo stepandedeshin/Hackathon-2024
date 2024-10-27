@@ -1,5 +1,7 @@
 import requests
 
+from config import settings
+
 
 async def get_user_request(request_text: str) -> str:
     '''
@@ -8,7 +10,7 @@ async def get_user_request(request_text: str) -> str:
     file = open('data.txt', 'r', encoding = 'utf-8').read()
     url = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion'
     headers = {
-        'Authorization': 'Bearer t1.9euelZrNk4-bzJWUyJvLm8_MicaOnO3rnpWaz8iUi5GKzs2SkpCYyZ7NjJbl8_c8WgpH-e9TAGRZ_N3z93wICEf571MAZFn8zef1656VmpqNmZqTz8yWncyVy8qKx4yP7_zF656VmpqNmZqTz8yWncyVy8qKx4yP.h_scoUHRbGOxzzNt2tzxu3u9a6L5F0hqcrSTtE6IpC9tKCCvG8PICQCP0-hnEoJfuI3CwsBZWCRiol1wTFVjAg',
+        'Authorization': f'Bearer {settings.GPT_API_TOKEN}',
         'Content-Type': 'application/json'
     }
     data = {

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     PASS: str
     DATABASE_NAME: str
     DATABASE_LINK: str
+    GPT_API_TOKEN: str
     ADMINS: list
 
     class Config:
