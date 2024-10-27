@@ -89,5 +89,7 @@ async def auth_start(callback: CallbackQuery) -> None:
         await callback.message.answer('Привяжите номер телефона, чтобы пользоваться онлайн поддержкой!', reply_markup = kb.auth)
     else:
         await callback.message.answer(f'Привязанный вами номер телефона: {phone_number}\nЗдесь вы можете его изменить или удалить', reply_markup = kb.auth_edit_or_delete)
-    await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
+    try:
+        await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
+    except: pass
     return

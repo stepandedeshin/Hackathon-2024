@@ -21,12 +21,12 @@ async def start_conv(callback: CallbackQuery, state: FSMContext) -> None:
     '''
     phone_number = await return_phone_number_or_none(user_id=str(callback.from_user.id))
     await callback.answer('')
-    await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
     if phone_number:
         await state.set_state(UserHelp.user_message)
         await callback.message.answer('Отправьте ваш вопрос и администратор в скором времени на него ответит!')
     else:
         await callback.message.answer('Вы не авторизованы! Чтобы обратиться в онлайн поддержку необходимо привязать свой номер телефона!', reply_markup = kb.auth_to_use_online_support)
+    await callback.message.bot.delete_message(chat_id = callback.message.chat.id, message_id = callback.message.message_id)
     return
 
 
@@ -52,7 +52,7 @@ async def send_help(message: Message, state: FSMContext) -> None:
         data = await state.get_data()
         await add_thread(data = data)
         await message.bot.send_message(text = f'Новое обращение от пользователя @{message.from_user.username}\n\n{message.text}', chat_id = '-1002437414181', message_thread_id = topic.message_thread_id)
-    await message.answer('Ваше обращение усппешно отправлено! Скоро администраторы вам ответят! Вы можете пользоваться ботом в ожидании ответа!', reply_markup = kb.use_bot_while_waiting)
+    await message.answer('Ваше обращение успешно отправлено! Скоро администраторы вам ответят! Вы можете пользоваться ботом в ожидании ответа!', reply_markup = kb.use_bot_while_waiting)
     await state.clear()
     return
 
