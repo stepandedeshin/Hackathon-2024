@@ -15,3 +15,6 @@ use pip3 install aiogram sqlalchemy psycopg2 requests pydantic pydantic_settings
 See required credentials in config.py
 # Database connection
 We prefer to use postgresql+psycopg2 connection to database but sqlalchemy allows to connect a lot of database types
+# Start
+python run.py 
+python3 run.py in case of error
