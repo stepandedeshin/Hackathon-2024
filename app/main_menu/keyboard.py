@@ -4,7 +4,7 @@ from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
 start_message = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = '🤖 GPT Ассистент', callback_data = 'gpt_assistant')],
     [InlineKeyboardButton(text = '📋 FAQ', callback_data = 'faq')],
-    [InlineKeyboardButton(text = '🗣️ Поддержка онлайн', callback_data = 'help_by_admin')],
+    [InlineKeyboardButton(text = '🗣️ Онлайн поддержка', callback_data = 'help_by_admin')],
     [InlineKeyboardButton(text = '📱 Авторизация в боте', callback_data = 'auth')]
 ])
 
