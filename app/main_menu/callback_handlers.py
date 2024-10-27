@@ -49,12 +49,53 @@ async def show_faq(callback: CallbackQuery) -> None:
     '''
     await callback.answer('')
     faq_questions = open('faq.txt', 'r', encoding='utf-8').read()
-    message_limit = 4096 
-    parts = [faq_questions[i: i + message_limit] for i in range(0, len(faq_questions), message_limit)]
-    for part in parts[0:-1:]:
-        await callback.message.answer(part)
-    await callback.message.answer(parts[-1], reply_markup = kb.show_faq)
+    message_limit = 2048
+    parts = []
+    current_part = ""
+    for word in faq_questions.split():
+        if len(current_part) + len(word) + 1 > message_limit:
+            parts.append(current_part)
+            current_part = word + " "
+        else:
+            current_part += word + " "
+    if current_part:
+        parts.append(current_part)
+    await callback.message.answer(text = parts[0], reply_markup = kb.paginatorfaq(length_of_faq = len(parts)))
     return 
+
+
+@MainMenuCallbackRouter.callback_query(kb.PaginationFAQ.filter(F.action.in_(['prev', 'page_number', 'next']))) 
+async def pagination_handler(callback: CallbackQuery, callback_data: kb.PaginationFAQ):
+    '''
+    Stars the pagination (the ability to select the page of text) of the faq text after page 1
+    
+    returns None
+    '''
+    await callback.answer('')
+    page_num = int(callback_data.page)
+    faq_questions = open('faq.txt', 'r', encoding='utf-8').read()
+    message_limit = 2048
+    parts = []
+    current_part = ""
+    for word in faq_questions.split():
+        if len(current_part) + len(word) + 1 > message_limit:
+            parts.append(current_part)
+            current_part = word + " "
+        else:
+            current_part += word + " "
+    if current_part:
+        parts.append(current_part)
+    if callback_data.action == 'prev':
+        page = page_num - 1 if page_num > 0 else 0
+        await callback.message.answer(text = parts[page], reply_markup=kb.paginatorfaq(length_of_faq = len(parts), page = page))
+        await callback.message.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    if callback_data.action == 'next':
+        page = page_num + 1 if page_num < len(parts) - 1 else page_num
+        await callback.message.answer(text = parts[page], reply_markup=kb.paginatorfaq(length_of_faq = len(parts), page = page))
+        await callback.message.bot.delete_message(chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    if callback_data.action == 'page_number':
+        await callback.answer('Это просто номер страницы!')
+    return
 
 
 @MainMenuCallbackRouter.callback_query(F.data == 'help_by_admin')

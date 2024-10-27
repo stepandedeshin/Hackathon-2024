@@ -1,5 +1,8 @@
 from aiogram.types import (InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, ReplyKeyboardMarkup)
+from aiogram.filters.callback_data import CallbackData
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+
 
 start_message = InlineKeyboardMarkup(inline_keyboard = [
     [InlineKeyboardButton(text = '🤖 GPT Ассистент', callback_data = 'gpt_assistant')],
@@ -44,3 +47,23 @@ auth_to_use_online_support = InlineKeyboardMarkup(inline_keyboard = [
 ])
 
 
+class PaginationFAQ(CallbackData, prefix = 'pag'):
+    action: str
+    page: int
+    
+
+def paginatorfaq(length_of_faq: int, page: int = 0) -> InlineKeyboardBuilder:
+    '''
+    Returns inline keyboard that used for pagination (the ability to select the page of all text)
+    '''
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        InlineKeyboardButton(text = '⬅️', callback_data = PaginationFAQ(action = 'prev', page = page).pack()),
+        InlineKeyboardButton(text = f'{page+1}/{length_of_faq}', callback_data = PaginationFAQ(action = 'page_number', page = page).pack()),
+        InlineKeyboardButton(text = '➡️', callback_data = PaginationFAQ(action = 'next', page = page).pack()),
+        width=3
+    )
+    builder.row(
+        InlineKeyboardButton(text = '🏠 Вернуться в меню', callback_data = 'main_menu')
+    )
+    return builder.as_markup()
