@@ -26,6 +26,7 @@ async def create_request(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(UserRequest.request_text)
     return
 
+
 @GPTAssistantCallbackRouter.message(UserRequest.request_text)
 async def push_request(message: Message, state: FSMContext) -> None:
     '''
