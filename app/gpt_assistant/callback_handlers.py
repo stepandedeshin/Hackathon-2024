@@ -42,7 +42,9 @@ async def push_request(message: Message, state: FSMContext) -> None:
         await message.bot.delete_message(chat_id = message.chat.id, message_id = message.message_id - 1)
     except: pass
     response = await get_user_request(request_text=request_text)
-    await message.answer(f'Вот ответ на ваш вопрос!\n\n{response}', reply_markup = kb.ask_again_or_menu)
+    try:
+        await message.answer(f'Вот ответ на ваш вопрос!\n\n{response}', reply_markup = kb.ask_again_or_menu)
+    except: await message.answer('Произошла ошибка на сервере Yandex, попробуйте задать вопрос еще раз!', reply_markup = kb.ask_again_or_menu)
     await add_request(message = message)
     await message.bot.delete_message(chat_id = message.chat.id, message_id = msg_1.message_id)
     return
